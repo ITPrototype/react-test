@@ -1,24 +1,37 @@
-import logo from './logo.svg';
 import './App.css';
+import Reqres from './users';
+import { useEffect,useState } from 'react';
+import Profiles from './Profiles';
+import Paging from './Paging';
 
 function App() {
+  const [users,setUsers] = useState([])
+  const [totalPages,setTotalPages] = useState(1);
+  const [currentPage,setCurrentPage] = useState(1);
+
+  
+
+  useEffect(()=>{
+    Reqres(currentPage).then((result)=>{
+      setUsers(result.data);
+      setCurrentPage(result.page);
+      setTotalPages(result.total_pages);
+    });
+  },[currentPage])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <Paging
+       currentPage={currentPage}
+       totalPages = {totalPages}
+       setCurrentPage = {setCurrentPage}
+      />
+      <div className='cardss'>
+          <Profiles
+           users={users}
+          />
+      </div>
+    </div> 
   );
 }
 
